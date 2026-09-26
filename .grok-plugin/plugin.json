@@ -7,11 +7,17 @@
     "url": "https://flightclaw.com"
   },
   "homepage": "https://flightclaw.com",
-  "repository": "https://github.com/jackculpan/flightclaw",
+  "repository": "https://github.com/flightclaw/agents",
   "license": "MIT",
   "keywords": [
     "flightclaw",
     "flight claw",
     "flightclaw track"
-  ]
+  ],
+  "mcpServers": {
+    "flightclaw": {
+      "type": "http",
+      "url": "https://mcp.flightclaw.com/mcp"
+    }
+  }
 }
