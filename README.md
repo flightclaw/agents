@@ -1,8 +1,53 @@
-# flightclaw
+# FlightClaw agents
 
-Track flight prices from Google Flights. Search routes, monitor prices over time, and get alerts when prices drop.
+Search, price-track and book flights from your AI assistant. FlightClaw covers
+about 300 airlines, remembers your travellers and preferences, and emails you
+when a tracked fare drops.
 
-## MCP Server
+## Option 1: Hosted MCP (recommended)
+
+Server URL: `https://mcp.flightclaw.com/mcp` (streamable HTTP, OAuth sign-in).
+Nothing to install.
+
+| Client | Setup |
+|---|---|
+| Claude (web / desktop) | Settings > Connectors > Add custom connector > paste `https://mcp.flightclaw.com/mcp` |
+| ChatGPT | Settings > Apps & Connectors > Create (developer mode) > paste `https://mcp.flightclaw.com/mcp` |
+| Claude Code | `claude mcp add --transport http flightclaw https://mcp.flightclaw.com/mcp` |
+| Cursor | Add `{"mcpServers":{"flightclaw":{"url":"https://mcp.flightclaw.com/mcp"}}}` to `~/.cursor/mcp.json` |
+| VS Code | `code --add-mcp '{"name":"flightclaw","type":"http","url":"https://mcp.flightclaw.com/mcp"}'` |
+| Windsurf | Add `{"mcpServers":{"flightclaw":{"serverUrl":"https://mcp.flightclaw.com/mcp"}}}` to `~/.codeium/windsurf/mcp_config.json` |
+
+### Hosted tools
+
+| Group | Tools |
+|---|---|
+| Search | `search_flights`, `search_multi_city`, `recommend_flights`, `get_offer`, `get_seat_map` |
+| Booking | `create_checkout`, `get_checkout_status`, `list_orders`, `get_order`, `request_change`, `cancel_order` |
+| Price tracking | `track_flight`, `list_tracked`, `remove_tracked` (checked daily, email alert on a drop) |
+| Profile | `get_me`, `set_me`, `save_traveler`, `list_travelers`, `get_traveler`, `delete_traveler`, `save_group`, `list_groups`, `get_group`, `delete_group`, `get_preferences`, `set_preferences`, `save_card`, `list_cards`, `delete_card`, `set_points_balance`, `list_points` |
+| Trips | `log_trip`, `list_trips`, `get_trip`, `trips_followup`, `record_trip_feedback` |
+
+### Booking and payment
+
+1. `search_flights` returns offers. Each `total_amount` includes the FlightClaw booking fee.
+2. `create_checkout` returns a `checkout_url` and the exact `total_amount` + `total_currency`. Nothing is charged yet.
+3. Pay one of two ways:
+   - **Checkout link**: the traveller opens `checkout_url` and pays by card.
+   - **Headless with Stripe Link**: the agent creates a Link spend request for exactly
+     `total_amount` (fare + booking fee), the user approves it in Link, and the agent pays
+     on `checkout_url` with the Link shared payment token / virtual card. The agent never
+     pays more than the approved amount.
+4. `get_checkout_status` until `completed`, then `get_order` for the booking reference.
+
+The agent never asks for card numbers.
+
+## Option 2: Local open-source server
+
+The rest of this README covers the self-hosted Python server in this repo.
+It searches Google Flights and tracks prices locally with no account.
+
+## Local MCP server
 
 FlightClaw runs as a local [MCP](https://modelcontextprotocol.io) server, giving any MCP-compatible client (Claude Code, Claude Desktop, etc.) access to flight search and tracking tools.
 
@@ -13,7 +58,7 @@ FlightClaw runs as a local [MCP](https://modelcontextprotocol.io) server, giving
 pip install "flights==0.9.0" "mcp[cli]<2" fastmcp pydantic-settings
 
 # Add to Claude Code
-claude mcp add flightclaw -- python3 /path/to/flightclaw/server.py
+claude mcp add flightclaw -- python3 /path/to/agents/server.py
 ```
 
 Or in Claude Desktop, add to `claude_desktop_config.json`:
@@ -23,7 +68,7 @@ Or in Claude Desktop, add to `claude_desktop_config.json`:
   "mcpServers": {
     "flightclaw": {
       "command": "python3",
-      "args": ["/path/to/flightclaw/server.py"]
+      "args": ["/path/to/agents/server.py"]
     }
   }
 }
@@ -97,7 +142,7 @@ python scripts/list-tracked.py
 ## Install (OpenClaw)
 
 ```bash
-npx skills add jackculpan/flightclaw
+npx skills add flightclaw/agents
 ```
 
 ## Install (Grok)
@@ -110,34 +155,35 @@ npx skills add jackculpan/flightclaw
 ## Install (Claude Code)
 
 ```
-/plugin marketplace add jackculpan/flightclaw
+/plugin marketplace add flightclaw/agents
 /plugin install flightclaw@flightclaw
 ```
 
 ## Install (Cursor)
 
 ```
-/plugin marketplace add jackculpan/flightclaw
+/plugin marketplace add flightclaw/agents
 /plugin install flightclaw
 ```
 
 ## Install (Gemini CLI)
 
 ```bash
-gemini extensions install https://github.com/jackculpan/flightclaw
+gemini extensions install https://github.com/flightclaw/agents
 ```
 
 Each client reads its own manifest from this repo — `.grok-plugin/`,
 `.claude-plugin/`, `.cursor-plugin/` and `gemini-extension.json` — and they all
-start the same MCP server.
+connect to the hosted server at `https://mcp.flightclaw.com/mcp`. To run the
+local server instead, use the setup in "Local MCP server" above.
 
-## The connector
+## The local server
 
-The connector runs `server.py` through `uv`, which resolves the pinned
+The local server runs `server.py` through `uv`, which resolves the pinned
 dependencies at start-up. Install [uv](https://docs.astral.sh/uv/) first; no
 other setup step runs on your machine.
 
-### What the connector reaches, and what it needs
+### What the local server reaches, and what it needs
 
 | Endpoint | Purpose | Credentials |
 |---|---|---|
@@ -153,7 +199,7 @@ tools stays inactive until its variables are set:
 | `FLIGHTCLAW_API_URL`, `FLIGHTCLAW_API_KEY` | Profile, booking and payment tools return "not configured" |
 | `FLIGHTCLAW_TENANT` | Server default tenant is used |
 | `KIWI_API_KEY`, `KIWI_AFFILID` | Kiwi coverage is skipped |
-| `HOST`, `PORT` | Only read in HTTP transport mode; the connector runs over stdio |
+| `HOST`, `PORT` | Only read in HTTP transport mode; the local server runs over stdio |
 
 FlightClaw reads no other environment variable, writes only to its own `data/`
 directory, and runs no install-time script.

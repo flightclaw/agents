@@ -1,0 +1,11 @@
+# Hosted remote MCP server. Smithery connects to the URL below; no build step runs.
+runtime: "remote"
+name: "flightclaw"
+displayName: "FlightClaw"
+description: "Search, price-track and book flights from about 300 airlines, paid on a hosted checkout link."
+homepage: "https://flightclaw.com"
+repository: "https://github.com/flightclaw/agents"
+remote:
+  type: "streamable-http"
+  url: "https://mcp.flightclaw.com/mcp"
+  auth: "oauth"

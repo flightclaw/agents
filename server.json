@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.flightclaw/agents",
+  "title": "FlightClaw",
+  "description": "Search, price-track and book flights from about 300 airlines, paid on a hosted checkout link.",
+  "version": "1.1.0",
+  "websiteUrl": "https://flightclaw.com",
+  "repository": {
+    "url": "https://github.com/flightclaw/agents",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.flightclaw.com/mcp"
+    }
+  ]
+}

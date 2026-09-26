@@ -1,23 +1,8 @@
 {
   "mcpServers": {
     "flightclaw": {
-      "command": "uv",
-      "args": [
-        "run",
-        "--no-project",
-        "--python",
-        "3.12",
-        "--with",
-        "flights==0.9.0",
-        "--with",
-        "mcp[cli]<2",
-        "--with",
-        "fastmcp",
-        "--with",
-        "pydantic-settings",
-        "python",
-        "${CURSOR_PLUGIN_ROOT}/server.py"
-      ]
+      "type": "http",
+      "url": "https://mcp.flightclaw.com/mcp"
     }
   }
 }

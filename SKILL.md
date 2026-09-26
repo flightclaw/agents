@@ -49,6 +49,32 @@ Set this up once, then reuse forever.
    best points value").
 
 ### 3. Booking & paying
+
+**Hosted server (`https://mcp.flightclaw.com/mcp`)**
+1. `search_flights` / `search_multi_city` / `recommend_flights` → pick an
+   offer → `get_offer` to confirm price, bags and fare rules. Offers expire in
+   about 30 minutes.
+2. Confirm the choice with the user, then `create_checkout(offer_id,
+   passengers)`. It returns `checkout_id`, `checkout_url` and the exact
+   `total_amount` + `total_currency` (airline fare + FlightClaw booking fee).
+   Nothing is charged yet.
+3. Pay one of two ways:
+   - **Checkout link** — give the user `checkout_url` and `total_amount`. The
+     user pays there by card.
+   - **Headless with Stripe Link** — create a Link spend request for exactly
+     `total_amount` in `total_currency`. The amount must include the booking
+     fee; the fare alone is too low. The user approves the spend in Link. Then
+     pay on `checkout_url` with the Link shared payment token / virtual card.
+4. `get_checkout_status(checkout_id)` until `completed`, then `get_order`.
+   `failed` means no payment was taken and you can retry.
+
+Payment rules:
+- Use the `total_amount` from `create_checkout`. Never compute the price yourself.
+- Never pay more than the amount the user approved in Link. If the total
+  changes, stop, create a new checkout and ask for a new approval.
+- Never ask for or type card numbers from the user.
+
+**Local server (this repo)**
 1. Get a bookable, payable offer with `duffel_search_flights` (real fares/
    conditions). `duffel_get_offer` / `duffel_get_seat_map` for extras.
 2. Confirm the choice with the user, then **`duffel_book_with_link`** with the
@@ -83,7 +109,12 @@ Set this up once, then reuse forever.
 **Search & tracking** — `search_flights`, `search_dates`, `track_flight`,
 `check_prices`, `list_tracked`, `remove_tracked`.
 
-**Booking (Duffel)** — `duffel_search_flights`, `duffel_search_multi_city`,
+**Hosted booking** — `get_offer`, `get_seat_map`, `create_checkout`,
+`get_checkout_status`, `list_orders`, `get_order`, `request_change`,
+`cancel_order`. Hosted price tracking: `track_flight`, `list_tracked`,
+`remove_tracked` (checked daily, email alert on a drop).
+
+**Local booking (Duffel)** — `duffel_search_flights`, `duffel_search_multi_city`,
 `duffel_get_offer`, `duffel_get_seat_map`, `duffel_book_flight`,
 `duffel_book_with_link`, `duffel_create_checkout`, `duffel_list_orders`,
 `duffel_get_order`, `duffel_request_change`, `duffel_confirm_change`,
@@ -105,11 +136,16 @@ terms change — verify current offers with the issuer.
 
 ## Setup
 
+Hosted: `claude mcp add --transport http flightclaw https://mcp.flightclaw.com/mcp`
+(sign in with OAuth; no keys needed).
+
+Local:
+
 ```bash
 pip install flights "mcp[cli]"
 export FLIGHTCLAW_API_URL="https://flightclaw-api.<your>.workers.dev"
 export FLIGHTCLAW_API_KEY="<your API key>"
-claude mcp add flightclaw -- python3 /path/to/flightclaw/server.py
+claude mcp add flightclaw -- python3 /path/to/agents/server.py
 ```
 
 The Worker (`flightclaw-api`) holds the Duffel token and D1 profile store; apply
