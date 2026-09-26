@@ -61,10 +61,10 @@ Set this up once, then reuse forever.
 3. Pay one of two ways:
    - **Checkout link** — give the user `checkout_url` and `total_amount`. The
      user pays there by card.
-   - **Headless with Stripe Link** — create a Link spend request for exactly
+   - **Link virtual card** — create a Link spend request for exactly
      `total_amount` in `total_currency`. The amount must include the booking
      fee; the fare alone is too low. The user approves the spend in Link. Then
-     pay on `checkout_url` with the Link shared payment token / virtual card.
+     pay on `checkout_url` with the Link virtual card.
 4. `get_checkout_status(checkout_id)` until `completed`, then `get_order`.
    `failed` means no payment was taken and you can retry.
 
