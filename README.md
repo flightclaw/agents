@@ -14,8 +14,8 @@ Nothing to install.
 | Claude (web / desktop) | Settings > Connectors > Add custom connector > paste `https://mcp.flightclaw.com/mcp` |
 | ChatGPT | Settings > Apps & Connectors > Create (developer mode) > paste `https://mcp.flightclaw.com/mcp` |
 | Claude Code | `claude mcp add --transport http flightclaw https://mcp.flightclaw.com/mcp` |
-| Cursor | Add `{"mcpServers":{"flightclaw":{"url":"https://mcp.flightclaw.com/mcp"}}}` to `~/.cursor/mcp.json` |
-| VS Code | `code --add-mcp '{"name":"flightclaw","type":"http","url":"https://mcp.flightclaw.com/mcp"}'` |
+| Cursor | [One-click install](https://cursor.com/en/install-mcp?name=flightclaw&config=eyJ1cmwiOiJodHRwczovL21jcC5mbGlnaHRjbGF3LmNvbS9tY3AifQ%3D%3D), or add `{"mcpServers":{"flightclaw":{"url":"https://mcp.flightclaw.com/mcp"}}}` to `~/.cursor/mcp.json` |
+| VS Code | [One-click install](https://vscode.dev/redirect/mcp/install?name=flightclaw&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fmcp.flightclaw.com%2Fmcp%22%7D), or `code --add-mcp '{"name":"flightclaw","type":"http","url":"https://mcp.flightclaw.com/mcp"}'` |
 | Windsurf | Add `{"mcpServers":{"flightclaw":{"serverUrl":"https://mcp.flightclaw.com/mcp"}}}` to `~/.codeium/windsurf/mcp_config.json` |
 
 ### Hosted tools
@@ -23,7 +23,7 @@ Nothing to install.
 | Group | Tools |
 |---|---|
 | Search | `search_flights`, `search_multi_city`, `recommend_flights`, `get_offer`, `get_seat_map` |
-| Booking | `create_checkout`, `get_checkout_status`, `list_orders`, `get_order`, `request_change`, `cancel_order` |
+| Booking | `create_checkout`, `pay_checkout`, `get_checkout_status`, `list_orders`, `get_order`, `request_change`, `cancel_order` |
 | Price tracking | `track_flight`, `list_tracked`, `remove_tracked` (checked daily, email alert on a drop) |
 | Profile | `get_me`, `set_me`, `save_traveler`, `list_travelers`, `get_traveler`, `delete_traveler`, `save_group`, `list_groups`, `get_group`, `delete_group`, `get_preferences`, `set_preferences`, `save_card`, `list_cards`, `delete_card`, `set_points_balance`, `list_points` |
 | Trips | `log_trip`, `list_trips`, `get_trip`, `trips_followup`, `record_trip_feedback` |
