@@ -23,7 +23,7 @@ Nothing to install.
 | Group | Tools |
 |---|---|
 | Search | `search_flights`, `search_multi_city`, `recommend_flights`, `get_offer`, `get_seat_map` |
-| Booking | `create_checkout`, `pay_checkout`, `get_checkout_status`, `list_orders`, `get_order`, `request_change`, `cancel_order` |
+| Booking | `create_checkout`, `get_checkout_status`, `list_orders`, `get_order`, `request_change`, `cancel_order` |
 | Price tracking | `track_flight`, `list_tracked`, `remove_tracked` (checked daily, email alert on a drop) |
 | Profile | `get_me`, `set_me`, `save_traveler`, `list_travelers`, `get_traveler`, `delete_traveler`, `save_group`, `list_groups`, `get_group`, `delete_group`, `get_preferences`, `set_preferences`, `save_card`, `list_cards`, `delete_card`, `set_points_balance`, `list_points` |
 | Trips | `log_trip`, `list_trips`, `get_trip`, `trips_followup`, `record_trip_feedback` |
@@ -34,9 +34,9 @@ Nothing to install.
 2. `create_checkout` returns a `checkout_url` and the exact `total_amount` + `total_currency`. Nothing is charged yet.
 3. Pay one of two ways:
    - **Checkout link**: the traveller opens `checkout_url` and pays by card.
-   - **Headless with Stripe Link**: the agent creates a Link spend request for exactly
+   - **Link virtual card**: the agent creates a Link spend request for exactly
      `total_amount` (fare + booking fee), the user approves it in Link, and the agent pays
-     on `checkout_url` with the Link shared payment token / virtual card. The agent never
+     on `checkout_url` with the Link virtual card. The agent never
      pays more than the approved amount.
 4. `get_checkout_status` until `completed`, then `get_order` for the booking reference.
 
