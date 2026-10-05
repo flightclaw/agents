@@ -296,37 +296,6 @@ def book_flight(
 # Register tracking tools on our mcp instance
 register_tracking_tools(mcp)
 
-# Register Duffel tools if API wrapper is configured
-from duffel_api import is_configured as duffel_configured
-if duffel_configured():
-    from duffel_tools import register_duffel_tools
-    register_duffel_tools(mcp)
-
-    from duffel_link import register_duffel_link_tools
-    register_duffel_link_tools(mcp)
-
-
-# Personalization layer (backend-backed): travelers, preferences, cards/points,
-# companion groups, trip history + learning loop, and preference-aware recommendation.
-from traveler_tools import register_traveler_tools
-register_traveler_tools(mcp)
-
-from preferences_tools import register_preferences_tools
-register_preferences_tools(mcp)
-
-from cards_tools import register_cards_tools
-register_cards_tools(mcp)
-
-from group_tools import register_group_tools
-register_group_tools(mcp)
-
-from trip_tools import register_trip_tools
-register_trip_tools(mcp)
-
-from recommend import register_recommend_tools
-register_recommend_tools(mcp)
-
-
 # =============================================================================
 # Prompts
 # =============================================================================

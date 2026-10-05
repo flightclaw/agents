@@ -1,6 +1,6 @@
 ---
 name: flightclaw
-description: Personal travel-booking agent. Onboard a traveler once (who you are, companions, loyalty programs, credit cards, travel preferences), then chat about where you want to go and get a few preference-ranked flight options, fully book and pay for them, and follow up after the trip to learn how you like to travel. Also searches and price-tracks flights via Google Flights. Runs as an MCP server (Python 3.10+, fli + mcp). Profiles live server-side in the private flightclaw-api Worker (D1).
+description: Personal travel-booking agent. Onboard a traveler once (who you are, companions, loyalty programs, credit cards, travel preferences), then chat about where you want to go and get a few preference-ranked flight options, book and pay for them, and follow up after the trip to learn how you like to travel. Uses the hosted FlightClaw MCP (https://mcp.flightclaw.com/mcp). A local open-source server in this repo searches and price-tracks flights via Google Flights.
 ---
 
 # flightclaw
@@ -9,10 +9,9 @@ FlightClaw is a personal travel-booking agent. It remembers who you are, who you
 travel with, the loyalty programs and cards you hold, and how you like to fly —
 then recommends, books, pays for, and learns from each trip.
 
-Personalization data (travelers, preferences, cards/points, companion groups,
-trip history) is stored **server-side** in the private `flightclaw-api` Worker
-(D1), reached via `FLIGHTCLAW_API_URL` + `FLIGHTCLAW_API_KEY`. Payment for
-bookings routes through **Link virtual cards** (`duffel_book_with_link`).
+Profiles, booking and payment run on the hosted server
+(`https://mcp.flightclaw.com/mcp`, OAuth sign-in). The local server in this repo
+only searches and price-tracks flights.
 
 ## The flow
 
@@ -74,16 +73,8 @@ Payment rules:
   changes, stop, create a new checkout and ask for a new approval.
 - Never ask for or type card numbers from the user.
 
-**Local server (this repo)**
-1. Get a bookable, payable offer with `duffel_search_flights` (real fares/
-   conditions). `duffel_get_offer` / `duffel_get_seat_map` for extras.
-2. Confirm the choice with the user, then **`duffel_book_with_link`** with the
-   group's `passengers` string. This creates a Link spend request (the user
-   approves the charge, ≤ $500), returns a virtual card + Duffel checkout URL,
-   and you complete payment via Chrome automation. For higher amounts use
-   `duffel_book_flight` (Duffel balance) or `duffel_create_checkout`.
-3. **`log_trip`** right after booking (route, dates, travelers, cabin, price,
-   `order_id`) so it enters history and the follow-up queue.
+After booking, call **`log_trip`** (route, dates, travelers, cabin, price,
+`order_id`) so the trip enters history and the follow-up queue.
 
 ### 4. Post-trip follow-up & learning (the real magic)
 1. `trips_pending_followup` surfaces trips that have completed/returned.
@@ -94,10 +85,9 @@ Payment rules:
 
 ## Tools
 
-**Personalization (backend-backed)**
+**Personalization (hosted)**
 - Travelers: `save_traveler`, `list_travelers`, `get_traveler`, `delete_traveler`,
-  `set_me`, `get_me`, `import_local_passengers` (one-time migration of any old
-  local `data/passengers.json`).
+  `set_me`, `get_me`.
 - Preferences: `set_preferences`, `get_preferences`, `update_preferences`.
 - Cards/points: `save_card`, `list_cards`, `delete_card`, `set_points_balance`,
   `list_points`.
@@ -113,13 +103,6 @@ Payment rules:
 `get_checkout_status`, `list_orders`, `get_order`, `request_change`,
 `cancel_order`. Hosted price tracking: `track_flight`, `list_tracked`,
 `remove_tracked` (checked daily, email alert on a drop).
-
-**Local booking (Duffel)** — `duffel_search_flights`, `duffel_search_multi_city`,
-`duffel_get_offer`, `duffel_get_seat_map`, `duffel_book_flight`,
-`duffel_book_with_link`, `duffel_create_checkout`, `duffel_list_orders`,
-`duffel_get_order`, `duffel_request_change`, `duffel_confirm_change`,
-`duffel_cancel_order`, `duffel_confirm_cancel`, `duffel_check_alerts`,
-`link_list_payment_methods`.
 
 ## External MCP integration
 
@@ -139,20 +122,14 @@ terms change — verify current offers with the issuer.
 Hosted: `claude mcp add --transport http flightclaw https://mcp.flightclaw.com/mcp`
 (sign in with OAuth; no keys needed).
 
-Local:
+Local (search and price tracking only, no account):
 
 ```bash
-pip install flights "mcp[cli]"
-export FLIGHTCLAW_API_URL="https://flightclaw-api.<your>.workers.dev"
-export FLIGHTCLAW_API_KEY="<your API key>"
+pip install "flights==0.9.0" "mcp[cli]<2" fastmcp pydantic-settings
 claude mcp add flightclaw -- python3 /path/to/agents/server.py
 ```
 
-The Worker (`flightclaw-api`) holds the Duffel token and D1 profile store; apply
-`schema.sql` once with `wrangler d1 execute flightclaw-db --remote --file schema.sql`.
-
 ## Data
 
-Personalization data is server-side (D1). Price-tracking history
-(`data/tracked.json`) and a local Duffel order cache (`data/duffel_orders.json`)
-remain local and are gitignored.
+The local server stores price-tracking history in `data/tracked.json`
+(gitignored).
