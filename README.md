@@ -1,8 +1,26 @@
-# FlightClaw agents
+# FlightClaw agents: book flights with AI
 
-Search, price-track and book flights from your AI assistant. FlightClaw covers
-about 300 airlines, remembers your travellers and preferences, and emails you
-when a tracked fare drops.
+Search, price-track and book flights from your AI assistant. FlightClaw is an
+AI flight booking agent and MCP server for Claude, ChatGPT, Cursor, VS Code and
+any MCP client. It covers about 300 airlines, finds cheap flights, remembers
+your travellers and preferences, and works as a flight price tracker that emails
+you when a tracked fare drops. Learn more at [flightclaw.com](https://flightclaw.com).
+
+## Skills
+
+Agent skills for the hosted MCP server (`https://mcp.flightclaw.com/mcp`). Each
+skill tells the agent which tools to call, in which order, and when to ask the
+user first.
+
+| Skill | Use it to |
+|---|---|
+| [book-flight](skills/book-flight/SKILL.md) | Search, compare and book flights with AI, then pay by checkout link or Link virtual card |
+| [track-flight-price](skills/track-flight-price/SKILL.md) | Track a fare daily and get an email alert when the price drops |
+| [plan-group-trip](skills/plan-group-trip/SKILL.md) | Save travellers and groups, search multi-city trips and book everyone at once |
+| [manage-booking](skills/manage-booking/SKILL.md) | Find orders and booking references, quote changes and cancel with a refund quote |
+| [traveler-profile](skills/traveler-profile/SKILL.md) | Save you, companions, preferences, cards, points balances and trip history |
+
+The root [SKILL.md](SKILL.md) covers the local open-source server.
 
 ## Option 1: Hosted MCP (recommended)
 
