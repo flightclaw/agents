@@ -206,18 +206,8 @@ other setup step runs on your machine.
 | Endpoint | Purpose | Credentials |
 |---|---|---|
 | `google.com/travel/flights` (via the `fli` library) | Flight search and price tracking | none |
-| `FLIGHTCLAW_API_URL` (the private flightclaw-api Worker) | Traveller profiles, preferences, cards, groups, trip history, Duffel booking and Link virtual-card payment | `FLIGHTCLAW_API_KEY` |
-| Kiwi Tequila (`api.tequila.kiwi.com`) | Optional bookability check; hand-off deep links to `kiwi.com` and `skyscanner.net` | `KIWI_API_KEY`, `KIWI_AFFILID` |
 
-Search and price tracking work with no credentials at all. Every other group of
-tools stays inactive until its variables are set:
-
-| Variable | Effect when unset |
-|---|---|
-| `FLIGHTCLAW_API_URL`, `FLIGHTCLAW_API_KEY` | Profile, booking and payment tools return "not configured" |
-| `FLIGHTCLAW_TENANT` | Server default tenant is used |
-| `KIWI_API_KEY`, `KIWI_AFFILID` | Kiwi coverage is skipped |
-| `HOST`, `PORT` | Only read in HTTP transport mode; the local server runs over stdio |
+Search and price tracking need no credentials. `HOST` and `PORT` are only read in HTTP transport mode.
 
 FlightClaw reads no other environment variable, writes only to its own `data/`
 directory, and runs no install-time script.
