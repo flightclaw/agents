@@ -27,6 +27,7 @@ from helpers import (
 )
 from search_utils import fmt_price, search_with_currency
 from tracking import register_tracking_tools
+from wifi_tools import register_wifi_tools
 
 mcp = _MCP("flightclaw")
 
@@ -295,6 +296,7 @@ def book_flight(
 
 # Register tracking tools on our mcp instance
 register_tracking_tools(mcp)
+register_wifi_tools(mcp)
 
 # =============================================================================
 # Prompts
