@@ -45,6 +45,7 @@ Nothing to install.
 | Price tracking | `track_flight`, `list_tracked`, `remove_tracked` (checked daily, email alert on a drop) |
 | Profile | `get_me`, `set_me`, `save_traveler`, `list_travelers`, `get_traveler`, `delete_traveler`, `save_group`, `list_groups`, `get_group`, `delete_group`, `get_preferences`, `set_preferences`, `save_card`, `list_cards`, `delete_card`, `set_points_balance`, `list_points` |
 | Trips | `log_trip`, `list_trips`, `get_trip`, `trips_followup`, `record_trip_feedback` |
+| WiFi | `check_flight_wifi` (does a specific flight have WiFi or Starlink; data from seatwifi.com) |
 
 ### Booking and payment
 
@@ -102,6 +103,7 @@ Or in Claude Desktop, add to `claude_desktop_config.json`:
 | `check_prices` | Check all tracked flights for price changes and alerts |
 | `list_tracked` | List all tracked flights with price history |
 | `remove_tracked` | Remove a route from tracking |
+| `check_flight_wifi` | Ask seatwifi.com whether a flight (e.g. UA1234) has WiFi or Starlink |
 
 ### Search filters
 

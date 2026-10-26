@@ -3,7 +3,7 @@
   "name": "io.github.flightclaw/agents",
   "title": "FlightClaw",
   "description": "Search, price-track and book flights from about 300 airlines, paid on a hosted checkout link.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "websiteUrl": "https://flightclaw.com",
   "repository": {
     "url": "https://github.com/flightclaw/agents",

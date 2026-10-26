@@ -104,6 +104,11 @@ After booking, call **`log_trip`** (route, dates, travelers, cabin, price,
 `cancel_order`. Hosted price tracking: `track_flight`, `list_tracked`,
 `remove_tracked` (checked daily, email alert on a drop).
 
+**WiFi** — `check_flight_wifi(flight_number)`: use when the user asks whether a
+specific flight (e.g. `UA1234`) has WiFi or Starlink. Call it only for flights the
+user cares about, not for every search result. Quote the attribution
+(seatwifi.com) when you relay the answer.
+
 ## External MCP integration
 
 FlightClaw stores the user's cards/points; the agent enriches and acts on them
