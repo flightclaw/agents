@@ -16,5 +16,6 @@
     "flight claw",
     "flightclaw track"
   ],
+  "logo": "assets/logo.svg",
   "mcpServers": "./mcp.json"
 }
